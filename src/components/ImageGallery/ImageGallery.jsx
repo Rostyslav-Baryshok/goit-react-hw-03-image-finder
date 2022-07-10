@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { ImageGalleryItem } from 'components/ImageGalleryItem';
+import { ImageGalleryItem } from 'components/ImageGallery/ImageGalleryItem/ImageGalleryItem';
 import PropTypes from 'prop-types';
-import s from './ImageGallery.module.css';
+import { List } from './ImageGallery.styled';
 
 export class ImageGallery extends Component {
   handleItemClick = event => {
@@ -21,11 +21,11 @@ export class ImageGallery extends Component {
     const { images } = this.props;
     return (
       <>
-        <ul className={s.gallery} onClick={this.handleItemClick}>
+        <List onClick={this.handleItemClick}>
           {images.map(image => (
             <ImageGalleryItem image={image} key={image.id} />
           ))}
-        </ul>
+        </List>
       </>
     );
   }

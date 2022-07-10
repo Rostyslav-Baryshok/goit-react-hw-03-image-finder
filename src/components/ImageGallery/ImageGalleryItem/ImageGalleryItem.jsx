@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import s from './ImageGalleryItem.module.css';
+import { Item, Images } from './ImageGalleryItem.styled';
 
 export const ImageGalleryItem = ({
   image: { webformatURL, largeImageURL, tags },
 }) => {
   return (
-    <li className={s.galleryItem}>
-      <img
-        className={s.galleryItem__image}
-        src={webformatURL}
-        alt={tags}
-        largeimg={largeImageURL}
-      />
-    </li>
+    <Item>
+      <Images src={webformatURL} alt={tags} largeimg={largeImageURL} />
+    </Item>
   );
 };
 
