@@ -5,7 +5,7 @@ import s from './Modal.module.css';
 
 const modalRoot = document.querySelector('#modal-root');
 
-class Modal extends Component {
+export class Modal extends Component {
   componentDidMount() {
     window.addEventListener('click', this.handleOverlayClick);
     window.addEventListener('keydown', this.handleEscClick);
@@ -48,5 +48,3 @@ Modal.propTypes = {
   modalImageURL: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };
-
-export default Modal;

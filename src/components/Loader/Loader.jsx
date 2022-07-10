@@ -1,7 +1,7 @@
 import s from './Loader.module.css';
 import { Bars } from 'react-loader-spinner';
 
-const Loader = () => {
+export const Loader = () => {
   return (
     <div role="alert">
       <div className={s.spinner}>
@@ -10,5 +10,3 @@ const Loader = () => {
     </div>
   );
 };
-
-export default Loader;
