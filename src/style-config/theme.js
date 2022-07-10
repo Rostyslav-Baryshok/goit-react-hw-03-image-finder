@@ -5,8 +5,8 @@ export const theme = {
     primary: '#07c',
     secondary: '#233387',
     accent: '#3f51b5',
-    shadowBox: ' #088e24;',
-    overlay: 'rgba(0, 0, 0, 0.8);',
+    shadowBox: ' #088e24',
+    overlay: '#000000d4',
   },
   space: [0, 2, 4, 8, 16, 32, 64, 128, 256],
   fonts: {
