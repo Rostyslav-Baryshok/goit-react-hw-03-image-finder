@@ -15,11 +15,10 @@ export const Header = styled.div`
     0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 `;
 
-export const Form = styled.form`
+export const FormStyle = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
-  max-width: 600px;
+  width: 500px;
   background-color: ${({ theme }) => theme.colors.light};
   border-radius: 3px;
   overflow: hidden;

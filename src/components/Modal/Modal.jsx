@@ -7,12 +7,10 @@ const modalRoot = document.querySelector('#modal-root');
 
 export class Modal extends Component {
   componentDidMount() {
-    // window.addEventListener('click', this.handleOverlayClick);
     window.addEventListener('keydown', this.handleEscClick);
   }
 
   componentWillUnmount() {
-    // window.removeEventListener('click', this.handleOverlayClick);
     window.removeEventListener('keydown', this.handleEscClick);
   }
 
