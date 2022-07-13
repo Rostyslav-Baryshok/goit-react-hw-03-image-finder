@@ -4,7 +4,7 @@ import { ImageGallery } from 'components/ImageGallery/';
 import { Button } from './components/Button';
 import { Loader } from './components/Loader';
 import { Modal } from './components/Modal';
-import api from './services/image-search-api';
+import { api } from './services/image-search-api';
 
 const Status = {
   IDLE: 'idle',
@@ -133,7 +133,7 @@ export class App extends Component {
               handleImageClick={this.handleImageClick}
             />
             {totalAddImages < totalImages ? (
-              <Button onClick={this.onButtonClick} />
+              <Button onClick={this.onButtonClick}>Load More</Button>
             ) : null}
           </>
         )}
