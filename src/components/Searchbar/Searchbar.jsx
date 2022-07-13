@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik';
 import PropTypes from 'prop-types';
 import { ImSearch } from 'react-icons/im';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Header, FormStyle, Button, Input } from './Searchbar.styled';
@@ -54,10 +54,7 @@ export class Searchbar extends Component {
             </FormStyle>
           </Form>
         </Formik>
-        <ToastContainer />
       </Header>
     );
   }
 }
-
-// export default Searchbar;
