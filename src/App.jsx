@@ -25,7 +25,7 @@ export class App extends Component {
     showModal: false,
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const prevQuery = prevState.query;
     const nextQuery = this.state.query;
 
