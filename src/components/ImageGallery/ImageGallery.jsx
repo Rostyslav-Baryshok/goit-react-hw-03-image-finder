@@ -1,41 +1,27 @@
-import React, { Component } from 'react';
-import { ImageGalleryItem } from 'components/ImageGallery/ImageGalleryItem/ImageGalleryItem';
 import PropTypes from 'prop-types';
+
+import { ImageGalleryItem } from 'components/ImageGallery/ImageGalleryItem/ImageGalleryItem';
 import { List } from './ImageGallery.styled';
 
-export class ImageGallery extends Component {
-  handleItemClick = event => {
-    event.preventDefault();
-
-    const { handleImageClick } = this.props;
-
-    if (event.currentTarget === event.target) {
-      return;
-    }
-
-    const imageURL = event.target.attributes.largeimg.value;
-    handleImageClick(imageURL);
-  };
-
-  render() {
-    const { images } = this.props;
+export const ImageGallery = ({ items, hendleOpenModal }) => {
+  const itemsImages = items.map(item => {
+    const { id, webformatURL, tags, largeImageURL } = item;
     return (
-      <>
-        <List onClick={this.handleItemClick}>
-          {images.map(image => (
-            <ImageGalleryItem image={image} key={image.id} />
-          ))}
-        </List>
-      </>
+      <ImageGalleryItem
+        key={id}
+        id={id}
+        webformatURL={webformatURL}
+        tags={tags}
+        largeImageURL={largeImageURL}
+        onClick={hendleOpenModal}
+      />
     );
-  }
-}
+  });
+
+  return <List>{itemsImages}</List>;
+};
 
 ImageGallery.propTypes = {
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-    })
-  ),
-  handleImageClick: PropTypes.func.isRequired,
+  hendleOpenModal: PropTypes.func.isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape),
 };

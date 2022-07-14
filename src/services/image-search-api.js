@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-const KEY = '28599383-28206a1b3fc5a66896effd792';
+const API_KEY = '28599383-28206a1b3fc5a66896effd792';
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
-export const fetchImages = async (query, page) => {
+export const api = async (name, page) => {
   const res = await axios.get(
-    `?q=${query}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12"`
+    `?q=${name}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
   );
-  return res.data;
-};
 
-export const api = { fetchImages };
+  const totalImage = res.data.totalHits;
+  const images = res.data.hits;
+  return {
+    totalImage,
+    images,
+  };
+};

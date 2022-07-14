@@ -1,143 +1,143 @@
-import React, { Component } from 'react';
-import { Searchbar } from './components/Searchbar';
-import { ImageGallery } from 'components/ImageGallery/';
-import { Button } from './components/Button';
-import { Loader } from './components/Loader';
-import { Modal } from './components/Modal';
+import { Component } from 'react';
+import { ImageGallery } from 'components/ImageGallery/ImageGallery';
+import { Searchbar } from 'components/Searchbar';
 import { api } from './services/image-search-api';
+import { Button } from 'components/Button';
+import { Loader } from 'components/Loader';
+import { Modal } from 'components/Modal';
 
-const Status = {
-  IDLE: 'idle',
-  PENDING: 'pending',
-  RESOLVED: 'resolved',
-  REJECTED: 'rejected',
-};
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
   state = {
-    query: '',
-    images: [],
-    error: null,
-    status: Status.IDLE,
+    searchName: '',
     page: 1,
-    totalImages: null,
-    modalImageURL: null,
-    showModal: false,
+    items: [],
+    openModalObject: null,
+    status: 'idle',
+    isFullImage: false,
   };
 
   componentDidUpdate(_, prevState) {
-    const prevQuery = prevState.query;
-    const nextQuery = this.state.query;
+    const { searchName, page } = this.state;
 
-    const prevPage = prevState.page;
-    const nextPage = this.state.page;
+    if (
+      prevState.page !== this.state.page ||
+      prevState.searchName !== this.state.searchName
+    ) {
+      this.setState({ status: 'pending' });
 
-    if (prevQuery !== nextQuery) {
-      this.setState({
-        status: Status.PENDING,
-      });
+      try {
+        api(searchName, page).then(({ totalImage, images }) => {
+          this.setState(prevState => {
+            if (totalImage === 0) {
+              toast.error('Nothing found');
+              return {
+                status: 'rejected',
+              };
+            }
 
-      api
-        .fetchImages(nextQuery, nextPage)
-        .then(images => {
-          if (!images.totalHits) {
-            return Promise.reject(
-              new Error(`Nothing found for the word: ${nextQuery}.`)
-            );
-          }
+            if (totalImage === prevState.items.length) {
+              return {
+                isFullImage: true,
+                items: [...prevState.items, ...images],
+                status: 'resolved',
+              };
+            }
 
-          return images;
-        })
-        .then(images =>
-          this.setState({
-            status: Status.RESOLVED,
-            images: images.hits,
-            totalImages: images.totalHits,
-          })
-        )
-        .catch(error => this.setState({ error, status: Status.REJECTED }));
-    }
-
-    if (prevPage !== nextPage && nextPage !== 1) {
-      this.setState({ status: Status.PENDING });
-
-      api
-        .fetchImages(nextQuery, nextPage)
-        .then(images => {
-          this.setState({
-            status: Status.RESOLVED,
+            return {
+              items: [...prevState.items, ...images],
+              status: 'resolved',
+            };
           });
-          return this.addImages(images);
-        })
-        .catch(error => this.setState({ error, status: Status.REJECTED }));
+        });
+      } catch (error) {
+        this.setState({ status: 'rejected' });
+      }
     }
   }
 
-  handleImageClick = ImageURL => {
-    this.setState({ modalImageURL: ImageURL });
+  hendeleSubmitSearchForm = ({ name }) => {
+    const validName = name.trim();
+    if (validName === '') {
+      toast.error('The search field must be filled');
+      return;
+    }
 
-    this.toggleModal();
+    if (this.state.searchName === validName) {
+      toast.error('Replace the search term');
+      return;
+    }
+
+    this.setState({
+      searchName: validName,
+      page: 1,
+      items: [],
+      openModalObject: null,
+      status: 'idle',
+      isFullImage: false,
+    });
   };
 
-  addImages = images => {
-    this.setState(prevState => ({
-      images: [...prevState.images, ...images.hits],
-    }));
+  hendleOpenModal = (url, alt) => {
+    const modalObject = {
+      url,
+      alt,
+    };
+    this.setState({ openModalObject: modalObject });
   };
 
-  handleSubmit = query => {
-    this.setState({ query, images: [], totalImages: null, page: 1 });
+  closeModal = () => {
+    this.setState({ openModalObject: null });
   };
 
-  toggleModal = () => {
-    this.setState(prevState => ({ showModal: !prevState.showModal }));
-  };
-
-  onButtonClick = () => {
+  loadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
   };
 
   render() {
-    const { status, error, images, totalImages, showModal, modalImageURL } =
-      this.state;
-    const totalAddImages = images.length;
+    const { items, openModalObject, status, isFullImage } = this.state;
+    if (status === 'idle') {
+      return <Searchbar onSubmit={this.hendeleSubmitSearchForm} />;
+    }
 
-    return (
-      <div>
-        {showModal && (
-          <Modal modalImageURL={modalImageURL} onClose={this.toggleModal} />
-        )}
+    if (status === 'pending') {
+      return (
+        <>
+          <Searchbar onSubmit={this.hendeleSubmitSearchForm} />
 
-        <Searchbar onSubmit={this.handleSubmit} />
+          <ImageGallery items={items} hendleOpenModal={this.hendleOpenModal} />
+          <Loader />
+          {items.length !== 0 && !isFullImage && (
+            <Button onClick={this.loadMore}>Load More</Button>
+          )}
+        </>
+      );
+    }
 
-        {status === Status.PENDING && (
-          <>
-            {images && (
-              <ImageGallery
-                images={images}
-                handleImageClick={this.handleImageClick}
-              />
-            )}
-            <Loader />
-          </>
-        )}
+    if (status === 'resolved') {
+      return (
+        <>
+          <Searchbar onSubmit={this.hendeleSubmitSearchForm} />
 
-        {status === Status.REJECTED && <h2>{error.message}</h2>}
+          <ImageGallery items={items} hendleOpenModal={this.hendleOpenModal} />
 
-        {status === Status.RESOLVED && (
-          <>
-            <ImageGallery
-              images={images}
-              handleImageClick={this.handleImageClick}
-            />
-            {totalAddImages < totalImages ? (
-              <Button onClick={this.onButtonClick}>Load More</Button>
-            ) : null}
-          </>
-        )}
-      </div>
-    );
+          {openModalObject && (
+            <Modal image={openModalObject} closeModal={this.closeModal} />
+          )}
+
+          {items.length !== 0 && !isFullImage && (
+            <Button onClick={this.loadMore}>Load More</Button>
+          )}
+        </>
+      );
+    }
+
+    if (status === 'rejected') {
+      return <Searchbar onSubmit={this.hendeleSubmitSearchForm} />;
+    }
   }
 }

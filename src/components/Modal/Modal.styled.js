@@ -13,8 +13,7 @@ export const Overlay = styled.div`
   z-index: 1200;
 `;
 
-export const ModalWindow = styled.div`
+export const ModalStyled = styled.div`
   max-width: 950px;
   max-height: 750px;
-  overflow: hidden;
 `;

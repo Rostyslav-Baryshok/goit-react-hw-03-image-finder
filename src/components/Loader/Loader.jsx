@@ -1,5 +1,5 @@
-import { Container } from './Loader.styled';
 import { Bars } from 'react-loader-spinner';
+import { Container } from './Loader.styled';
 
 export const Loader = () => {
   return (
